@@ -151,7 +151,9 @@ async function getPreset (devServerConfig: WebpackDevServerConfig): Promise<Opti
 devServer.create = async function (devServerConfig: WebpackDevServerConfig) {
   const { frameworkConfig, sourceWebpackModulesResult } = await getPreset(devServerConfig)
 
-  overrideSourceMaps()
+  if (devServerConfig.framework !== 'angular') {
+    overrideSourceMaps()
+  }
 
   const { server, compiler } = await createWebpackDevServer({
     devServerConfig,
