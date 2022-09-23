@@ -34,6 +34,18 @@ describe('e2e error ui', function () {
     })
   })
 
+  systemTests.it('CT forces TS sourcemaps to be generated in webpack', {
+    testingType: 'component',
+    configFile: 'cypress-ct.config.js',
+    browser: 'chrome',
+    project: 'webpack-preprocessor-ts-loader',
+    spec: 'cypress/e2e/failing.*',
+    expectedExitCode: 1,
+    onRun (exec) {
+      return exec().then(verifyPassedAndFailedAreSame(1))
+    },
+  })
+
   // https://github.com/cypress-io/cypress/issues/16255
   systemTests.it('handles errors when test files are outside of project root', {
     browser: '!webkit', // TODO(webkit): fix+unskip

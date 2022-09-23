@@ -13,6 +13,7 @@ import { createReactAppHandler } from './helpers/createReactAppHandler'
 import { nextHandler } from './helpers/nextHandler'
 import { sourceDefaultWebpackDependencies, SourceRelativeWebpackResult } from './helpers/sourceRelativeWebpackModules'
 import { angularHandler } from './helpers/angularHandler'
+import { overrideSourceMaps } from './helpers/typescriptHelper'
 
 const debug = debugLib('cypress:webpack-dev-server:devServer')
 
@@ -149,6 +150,8 @@ async function getPreset (devServerConfig: WebpackDevServerConfig): Promise<Opti
  */
 devServer.create = async function (devServerConfig: WebpackDevServerConfig) {
   const { frameworkConfig, sourceWebpackModulesResult } = await getPreset(devServerConfig)
+
+  overrideSourceMaps()
 
   const { server, compiler } = await createWebpackDevServer({
     devServerConfig,
