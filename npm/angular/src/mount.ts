@@ -7,13 +7,14 @@ import 'zone.js'
 window.Mocha['__zone_patch__'] = false
 import 'zone.js/testing'
 
-import { CommonModule } from '@angular/common'
-import { Component, ErrorHandler, EventEmitter, Injectable, SimpleChange, SimpleChanges, Type } from '@angular/core'
+import { CommonModule, DOCUMENT } from '@angular/common'
+import { Component, ErrorHandler, EventEmitter, Inject, Injectable, SimpleChange, SimpleChanges, Type } from '@angular/core'
 import {
   ComponentFixture,
   getTestBed,
   TestModuleMetadata,
   TestBed,
+  TestComponentRenderer,
 } from '@angular/core/testing'
 import {
   BrowserDynamicTestingModule,
@@ -21,6 +22,7 @@ import {
 } from '@angular/platform-browser-dynamic/testing'
 import {
   setupHooks,
+  getContainerEl,
 } from '@cypress/mount-utils'
 
 /**
@@ -152,6 +154,20 @@ function bootstrapModule<T> (
   return testModuleMetaData
 }
 
+@Injectable()
+export class CypressTestComponentRenderer extends TestComponentRenderer {
+  override insertRootElement (rootElId: string) {
+    this.removeAllRootElements()
+
+    const rootElement = getContainerEl()
+
+    rootElement.setAttribute('id', rootElId)
+    document.body.appendChild(rootElement)
+  }
+
+  override removeAllRootElements () {}
+}
+
 /**
  * Initializes the TestBed
  *
@@ -170,6 +186,8 @@ function initTestBed<T> (
   getTestBed().configureTestingModule({
     ...bootstrapModule(componentFixture, configRest),
   })
+
+  getTestBed().overrideProvider(TestComponentRenderer, { useValue: new CypressTestComponentRenderer() })
 
   if (providers != null) {
     getTestBed().overrideComponent(componentFixture, {
