@@ -55,6 +55,8 @@ async function loadWebpackConfig (devServerConfig: WebpackDevServerConfig): Prom
 
   const nextConfig = await loadConfig('development', devServerConfig.cypressConfig.projectRoot)
   const runWebpackSpan = getRunWebpackSpan(devServerConfig)
+  const reactVersion = getReactVersion(devServerConfig.cypressConfig.projectRoot)
+
   const webpackConfig = await getNextJsBaseWebpackConfig(
     devServerConfig.cypressConfig.projectRoot,
     {
@@ -69,6 +71,8 @@ async function loadWebpackConfig (devServerConfig: WebpackDevServerConfig): Prom
       isServer: false,
       // Client webpack config for Next.js > 12.1.5
       compilerType: 'client',
+      // Required for Next.js > 13
+      hasReactRoot: reactVersion === 18,
     },
   )
 
@@ -298,5 +302,16 @@ function changeNextCachePath (webpackConfig: Configuration) {
     webpackConfig.cache.cacheDirectory = cacheDirectory.replace(/webpack$/, 'cypress-webpack')
 
     debug('Changing Next cache path from %s to %s', cacheDirectory, webpackConfig.cache.cacheDirectory)
+  }
+}
+
+function getReactVersion (projectRoot: string): number | undefined {
+  try {
+    const reactPackageJsonPath = require.resolve('react/package.json', { paths: [projectRoot] })
+    const { version } = require(reactPackageJsonPath)
+
+    return Number(version.split('.')[0])
+  } catch (e) {
+    debug('Failed to source react with error: ', e)
   }
 }
