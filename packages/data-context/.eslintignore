@@ -5,4 +5,5 @@
 **/cypress/fixtures
 /test/unit/codegen/files
 /test/unit/codegen/tmp
+/test/fixtures/**
 **/__snapshots__
