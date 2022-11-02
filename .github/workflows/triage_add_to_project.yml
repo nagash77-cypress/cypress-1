@@ -13,10 +13,8 @@ jobs:
     name: Add to triage project
     runs-on: ubuntu-latest
     steps:
-      - name: Check if organization member
-        id: is_organization_member
-        if: github.event.action == 'opened'
-        uses: actions/is-organization-member@v1
+      - name: Is Organization Member
+        uses: JamesSingleton/is-organization-member@1.0.0
         with:
           organization: nagash77-cypress
           username: ${{ github.event.issue.user.login }}
