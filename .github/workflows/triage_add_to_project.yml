@@ -27,7 +27,7 @@ jobs:
         if: steps.is_organization_member.outputs.result == false
         uses: actions/add-to-project@v0.3.0
         with:
-          project-url: hhttps://github.com/orgs/nagash77-cypress/projects/1
+          project-url: https://github.com/orgs/nagash77-cypress/projects/1
           github-token: ${{ secrets.ORG_SECRET_FULL }}
         
           
